@@ -11,6 +11,8 @@ class YatzyTest {
 	void chance() {
 		assertEquals(15, new Yatzy(2, 3, 4, 5, 1).chance());
 		assertEquals(16, new Yatzy(3, 3, 4, 5, 1).chance());
+		assertEquals(14, new Yatzy(1, 1, 3, 3, 6).chance());
+		assertEquals(21, new Yatzy(4, 5, 5, 6, 1).chance());
 	}
 
 	@Test
@@ -18,6 +20,8 @@ class YatzyTest {
 		assertEquals(50, new Yatzy(4, 4, 4, 4, 4).yatzy());
 		assertEquals(50, new Yatzy(6, 6, 6, 6, 6).yatzy());
 		assertEquals(0, new Yatzy(6, 6, 6, 6, 3).yatzy());
+		assertEquals(50, new Yatzy(1, 1, 1, 1, 1).yatzy());
+		assertEquals(0, new Yatzy(1, 1, 1, 2, 1).yatzy());
 	}
 
 	@Test
@@ -26,12 +30,14 @@ class YatzyTest {
 		assertEquals(2, new Yatzy(1, 2, 1, 4, 5).ones());
 		assertEquals(0, new Yatzy(6, 2, 2, 4, 5).ones());
 		assertEquals(4, new Yatzy(1, 2, 1, 1, 1).ones());
+		assertEquals(0, new Yatzy(3, 3, 3, 4, 5).ones());
 	}
 
 	@Test
 	void twos() {
 		assertEquals(4, new Yatzy(1, 2, 3, 2, 6).twos());
 		assertEquals(10, new Yatzy(2, 2, 2, 2, 2).twos());
+		assertEquals(4, new Yatzy(2, 3, 2, 5, 1).twos());
 	}
 
 	@Test
@@ -45,6 +51,7 @@ class YatzyTest {
 		assertEquals(12, new Yatzy(4, 4, 4, 5, 5).fours());
 		assertEquals(8, new Yatzy(4, 4, 5, 5, 5).fours());
 		assertEquals(4, new Yatzy(4, 5, 5, 5, 5).fours());
+		assertEquals(8, new Yatzy(1, 1, 2, 4, 4).fours());
 	}
 
 	@Test
@@ -66,12 +73,19 @@ class YatzyTest {
 		assertEquals(6, new Yatzy(3, 4, 3, 5, 6).pair());
 		assertEquals(10, new Yatzy(5, 3, 3, 3, 5).pair());
 		assertEquals(12, new Yatzy(5, 3, 6, 6, 5).pair());
+		assertEquals(8, new Yatzy(3, 3, 3, 4, 4).pair());
+		assertEquals(12, new Yatzy(1, 1, 6, 2, 6).pair());
+		assertEquals(6, new Yatzy(3, 3, 3, 4, 1).pair());
+		assertEquals(6, new Yatzy(3, 3, 3, 3, 1).pair());
 	}
 
 	@Test
 	void two_pairs() {
 		assertEquals(16, new Yatzy(3, 3, 5, 4, 5).twoPairs());
 		assertEquals(16, new Yatzy(3, 3, 5, 5, 5).twoPairs());
+		assertEquals(8, new Yatzy(1, 1, 2, 3, 3).twoPairs());
+		assertEquals(0, new Yatzy(1, 1, 2, 3, 4).twoPairs());
+		assertEquals(6, new Yatzy(1, 1, 2, 2, 2).twoPairs());
 	}
 
 	@Test
@@ -80,12 +94,17 @@ class YatzyTest {
 		assertEquals(15, new Yatzy(5, 3, 5, 4, 5).threeOfAKind());
 		assertEquals(9, new Yatzy(3, 3, 3, 3, 5).threeOfAKind());
 		assertEquals(9, new Yatzy(3, 3, 3, 3, 3).threeOfAKind());
+		assertEquals(0, new Yatzy(3, 3, 4, 5, 6).threeOfAKind());
+		assertEquals(9, new Yatzy(3, 3, 3, 3, 1).threeOfAKind());
 	}
 
 	@Test
 	void four_of_a_kind() {
 		assertEquals(12, new Yatzy(3, 3, 3, 3, 5).fourOfAKind());
 		assertEquals(20, new Yatzy(5, 5, 5, 4, 5).fourOfAKind());
+		assertEquals(8, new Yatzy(2, 2, 2, 2, 5).fourOfAKind());
+		assertEquals(0, new Yatzy(2, 2, 2, 5, 5).fourOfAKind());
+		assertEquals(8, new Yatzy(2, 2, 2, 2, 2).fourOfAKind());
 	}
 
 	@Test
@@ -106,5 +125,8 @@ class YatzyTest {
 	void full_house() {
 		assertEquals(18, new Yatzy(6, 2, 2, 2, 6).fullHouse());
 		assertEquals(0, new Yatzy(2, 3, 4, 5, 6).fullHouse());
+		assertEquals(8, new Yatzy(1, 1, 2, 2, 2).fullHouse());
+		assertEquals(0, new Yatzy(2, 2, 3, 3, 4).fullHouse());
+		assertEquals(0, new Yatzy(4, 4, 4, 4, 4).fullHouse());
 	}
 }
