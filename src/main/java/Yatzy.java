@@ -1,3 +1,4 @@
+import static java.util.Arrays.asList;
 import static java.util.Arrays.stream;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.collectingAndThen;
@@ -6,6 +7,7 @@ import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.summingInt;
 import static java.util.stream.Collectors.toList;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -82,37 +84,11 @@ public class Yatzy {
 	}
 
 	public int smallStraight() {
-		int[] tallies;
-		tallies = new int[6];
-		tallies[dice[0] - 1] += 1;
-		tallies[dice[1] - 1] += 1;
-		tallies[dice[2] - 1] += 1;
-		tallies[dice[3] - 1] += 1;
-		tallies[dice[4] - 1] += 1;
-		if (tallies[0] == 1 &&
-				tallies[1] == 1 &&
-				tallies[2] == 1 &&
-				tallies[3] == 1 &&
-				tallies[4] == 1)
-			return 15;
-		return 0;
+		return sameNumbers(asList(1, 2, 3, 4, 5)) ? 15 : 0;
 	}
 
 	public int largeStraight() {
-		int[] tallies;
-		tallies = new int[6];
-		tallies[dice[0] - 1] += 1;
-		tallies[dice[1] - 1] += 1;
-		tallies[dice[2] - 1] += 1;
-		tallies[dice[3] - 1] += 1;
-		tallies[dice[4] - 1] += 1;
-		if (tallies[1] == 1 &&
-				tallies[2] == 1 &&
-				tallies[3] == 1 &&
-				tallies[4] == 1
-				&& tallies[5] == 1)
-			return 20;
-		return 0;
+		return sameNumbers(asList(2, 3, 4, 5, 6)) ? 20 : 0;
 	}
 
 	public int fullHouse() {
@@ -165,4 +141,13 @@ public class Yatzy {
 				.collect(groupingBy(identity(),
 						collectingAndThen(counting(), Long::intValue)));
 	}
+
+	private boolean sameNumbers(List<Integer> straight) {
+		return stream(dice)
+				.boxed()
+				.sorted(Comparator.naturalOrder())
+				.collect(toList())
+				.equals(straight);
+	}
+
 }
