@@ -1,10 +1,8 @@
 import static java.util.Arrays.asList;
 import static java.util.Arrays.stream;
 import static java.util.function.Function.identity;
-import static java.util.stream.Collectors.collectingAndThen;
 import static java.util.stream.Collectors.counting;
 import static java.util.stream.Collectors.groupingBy;
-import static java.util.stream.Collectors.summingInt;
 import static java.util.stream.Collectors.toList;
 
 import java.util.Comparator;
@@ -22,7 +20,7 @@ public class Yatzy {
 	}
 
 	public int chance() {
-		return IntStream.of(dice).sum();
+		return sumDice();
 	}
 
 	public int yatzy() {
@@ -33,27 +31,27 @@ public class Yatzy {
 	}
 
 	public int ones() {
-		return sumByValue(1);
+		return sumOf(1);
 	}
 
 	public int twos() {
-		return sumByValue(2);
+		return sumOf(2);
 	}
 
 	public int threes() {
-		return sumByValue(3);
+		return sumOf(3);
 	}
 
 	public int fours() {
-		return sumByValue(4);
+		return sumOf(4);
 	}
 
 	public int fives() {
-		return sumByValue(5);
+		return sumOf(5);
 	}
 
 	public int sixes() {
-		return sumByValue(6);
+		return sumOf(6);
 	}
 
 	public int pair() {
@@ -63,14 +61,16 @@ public class Yatzy {
 	}
 
 	public int twoPairs() {
-		var diceValueHavingPair = findNOfAKind(2)
+		var listOfPair = findNOfAKind(2)
 				.boxed().collect(toList());
 
-		if (diceValueHavingPair.size() != 2) {
-			return 0;
+		if (listOfPair.size() == 2) {
+			return listOfPair.stream()
+					.mapToInt(Integer::intValue)
+					.sum() * 2;
 		}
-		return diceValueHavingPair.stream()
-				.collect(summingInt(x -> x)) * 2;
+
+		return 0;
 	}
 
 	public int threeOfAKind() {
@@ -84,11 +84,17 @@ public class Yatzy {
 	}
 
 	public int smallStraight() {
-		return sameNumbers(asList(1, 2, 3, 4, 5)) ? 15 : 0;
+		if (sameNumbers(asList(1, 2, 3, 4, 5))) {
+			return 15;
+		}
+		return 0;
 	}
 
 	public int largeStraight() {
-		return sameNumbers(asList(2, 3, 4, 5, 6)) ? 20 : 0;
+		if (sameNumbers(asList(2, 3, 4, 5, 6))) {
+			return 20;
+		}
+		return 0;
 	}
 
 	public int fullHouse() {
@@ -98,13 +104,17 @@ public class Yatzy {
 				.boxed().collect(toList());
 
 		if (listOfPair.size() == 2 && listOfThreeOfAKind.size() == 1) {
-			return IntStream.of(dice).sum();
+			return sumDice();
 		}
 
 		return 0;
 	}
 
-	private int sumByValue(int value) {
+	private int sumDice() {
+		return IntStream.of(dice).sum();
+	}
+
+	private int sumOf(int value) {
 		return IntStream.of(dice)
 				.filter(die -> die == value)
 				.sum();
@@ -116,10 +126,9 @@ public class Yatzy {
 				.mapToInt(Entry::getKey);
 	}
 
-	private Map<Integer, Integer> diceCounts() {
+	private Map<Integer, Long> diceCounts() {
 		return stream(dice).boxed()
-				.collect(groupingBy(identity(),
-						collectingAndThen(counting(), Long::intValue)));
+				.collect(groupingBy(identity(), counting()));
 	}
 
 	private boolean sameNumbers(List<Integer> straight) {
