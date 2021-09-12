@@ -1,108 +1,46 @@
+import java.util.stream.IntStream;
+
 public class Yatzy {
 
 	private final int[] dice;
 
 	public Yatzy(int d1, int d2, int d3, int d4, int d5) {
-		dice = new int[5];
-		dice[0] = d1;
-		dice[1] = d2;
-		dice[2] = d3;
-		dice[3] = d4;
-		dice[4] = d5;
+		dice = new int[] { d1, d2, d3, d4, d5 };
 	}
 
 	public int chance() {
-		int total = 0;
-		total += dice[0];
-		total += dice[1];
-		total += dice[2];
-		total += dice[3];
-		total += dice[4];
-		return total;
+		return IntStream.of(dice).sum();
 	}
 
 	public int yatzy() {
-		int[] counts = new int[6];
-		for (int die : dice)
-			counts[die - 1]++;
-		for (int i = 0; i != 6; i++)
-			if (counts[i] == 5)
-				return 50;
+		if (IntStream.of(dice).distinct().count() == 1) {
+			return 50;
+		}
 		return 0;
 	}
 
 	public int ones() {
-		int sum = 0;
-		if (dice[0] == 1)
-			sum++;
-		if (dice[1] == 1)
-			sum++;
-		if (dice[2] == 1)
-			sum++;
-		if (dice[3] == 1)
-			sum++;
-		if (dice[4] == 1)
-			sum++;
-
-		return sum;
+		return sumByValue(1);
 	}
 
 	public int twos() {
-		int sum = 0;
-		if (dice[0] == 2)
-			sum += 2;
-		if (dice[1] == 2)
-			sum += 2;
-		if (dice[2] == 2)
-			sum += 2;
-		if (dice[3] == 2)
-			sum += 2;
-		if (dice[4] == 2)
-			sum += 2;
-		return sum;
+		return sumByValue(2);
 	}
 
 	public int threes() {
-		int sum = 0;
-		if (dice[0] == 3)
-			sum += 3;
-		if (dice[1] == 3)
-			sum += 3;
-		if (dice[2] == 3)
-			sum += 3;
-		if (dice[3] == 3)
-			sum += 3;
-		if (dice[4] == 3)
-			sum += 3;
-		return sum;
+		return sumByValue(3);
 	}
 
 	public int fours() {
-		int sum;
-		sum = 0;
-		for (int at = 0; at != 5; at++) {
-			if (dice[at] == 4) {
-				sum += 4;
-			}
-		}
-		return sum;
+		return sumByValue(4);
 	}
 
 	public int fives() {
-		int s = 0;
-		int i;
-		for (i = 0; i < dice.length; i++)
-			if (dice[i] == 5)
-				s = s + 5;
-		return s;
+		return sumByValue(5);
 	}
 
 	public int sixes() {
-		int sum = 0;
-		for (int at = 0; at < dice.length; at++)
-			if (dice[at] == 6)
-				sum = sum + 6;
-		return sum;
+		return sumByValue(6);
 	}
 
 	public int pair() {
@@ -232,5 +170,11 @@ public class Yatzy {
 			return _2_at * 2 + _3_at * 3;
 		else
 			return 0;
+	}
+
+	private int sumByValue(int value) {
+		return IntStream.of(dice)
+				.filter(die -> die == value)
+				.sum();
 	}
 }
