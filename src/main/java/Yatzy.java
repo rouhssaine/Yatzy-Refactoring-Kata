@@ -1,3 +1,14 @@
+import static java.util.Arrays.stream;
+import static java.util.function.Function.identity;
+import static java.util.stream.Collectors.collectingAndThen;
+import static java.util.stream.Collectors.counting;
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.summingInt;
+import static java.util.stream.Collectors.toList;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.stream.IntStream;
 
 public class Yatzy {
@@ -44,65 +55,30 @@ public class Yatzy {
 	}
 
 	public int pair() {
-		int[] counts = new int[6];
-		counts[dice[0] - 1]++;
-		counts[dice[1] - 1]++;
-		counts[dice[2] - 1]++;
-		counts[dice[3] - 1]++;
-		counts[dice[4] - 1]++;
-		int at;
-		for (at = 0; at != 6; at++)
-			if (counts[6 - at - 1] >= 2)
-				return (6 - at) * 2;
-		return 0;
+		return findNOfAKind(2)
+				.max()
+				.orElse(0) * 2;
 	}
 
 	public int twoPairs() {
-		int[] counts = new int[6];
-		counts[dice[0] - 1]++;
-		counts[dice[1] - 1]++;
-		counts[dice[2] - 1]++;
-		counts[dice[3] - 1]++;
-		counts[dice[4] - 1]++;
-		int n = 0;
-		int score = 0;
-		for (int i = 0; i < 6; i += 1)
-			if (counts[6 - i - 1] >= 2) {
-				n++;
-				score += (6 - i);
-			}
-		if (n == 2)
-			return score * 2;
-		else
+		List<Integer> diceValueHavingPair = findNOfAKind(2)
+				.boxed().collect(toList());
+
+		if (diceValueHavingPair.size() != 2) {
 			return 0;
+		}
+		return diceValueHavingPair.stream()
+				.collect(summingInt(x -> x)) * 2;
 	}
 
 	public int threeOfAKind() {
-		int[] t;
-		t = new int[6];
-		t[dice[0] - 1]++;
-		t[dice[1] - 1]++;
-		t[dice[2] - 1]++;
-		t[dice[3] - 1]++;
-		t[dice[4] - 1]++;
-		for (int i = 0; i < 6; i++)
-			if (t[i] >= 3)
-				return (i + 1) * 3;
-		return 0;
+		return findNOfAKind(3)
+				.sum() * 3;
 	}
 
 	public int fourOfAKind() {
-		int[] tallies;
-		tallies = new int[6];
-		tallies[dice[0] - 1]++;
-		tallies[dice[1] - 1]++;
-		tallies[dice[2] - 1]++;
-		tallies[dice[3] - 1]++;
-		tallies[dice[4] - 1]++;
-		for (int i = 0; i < 6; i++)
-			if (tallies[i] >= 4)
-				return (i + 1) * 4;
-		return 0;
+		return findNOfAKind(4)
+				.sum() * 4;
 	}
 
 	public int smallStraight() {
@@ -176,5 +152,17 @@ public class Yatzy {
 		return IntStream.of(dice)
 				.filter(die -> die == value)
 				.sum();
+	}
+
+	private IntStream findNOfAKind(int n) {
+		return diceCounts().entrySet().stream()
+				.filter(entry -> entry.getValue() >= n)
+				.mapToInt(Entry::getKey);
+	}
+
+	private Map<Integer, Integer> diceCounts() {
+		return stream(dice).boxed()
+				.collect(groupingBy(identity(),
+						collectingAndThen(counting(), Long::intValue)));
 	}
 }
