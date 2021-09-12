@@ -63,7 +63,7 @@ public class Yatzy {
 	}
 
 	public int twoPairs() {
-		List<Integer> diceValueHavingPair = findNOfAKind(2)
+		var diceValueHavingPair = findNOfAKind(2)
 				.boxed().collect(toList());
 
 		if (diceValueHavingPair.size() != 2) {
@@ -92,36 +92,16 @@ public class Yatzy {
 	}
 
 	public int fullHouse() {
-		int[] tallies;
-		boolean _2 = false;
-		int i;
-		int _2_at = 0;
-		boolean _3 = false;
-		int _3_at = 0;
+		var listOfPair = findNOfAKind(2)
+				.boxed().collect(toList());
+		var listOfThreeOfAKind = findNOfAKind(3)
+				.boxed().collect(toList());
 
-		tallies = new int[6];
-		tallies[dice[0] - 1] += 1;
-		tallies[dice[1] - 1] += 1;
-		tallies[dice[2] - 1] += 1;
-		tallies[dice[3] - 1] += 1;
-		tallies[dice[4] - 1] += 1;
+		if (listOfPair.size() == 2 && listOfThreeOfAKind.size() == 1) {
+			return IntStream.of(dice).sum();
+		}
 
-		for (i = 0; i != 6; i += 1)
-			if (tallies[i] == 2) {
-				_2 = true;
-				_2_at = i + 1;
-			}
-
-		for (i = 0; i != 6; i += 1)
-			if (tallies[i] == 3) {
-				_3 = true;
-				_3_at = i + 1;
-			}
-
-		if (_2 && _3)
-			return _2_at * 2 + _3_at * 3;
-		else
-			return 0;
+		return 0;
 	}
 
 	private int sumByValue(int value) {
